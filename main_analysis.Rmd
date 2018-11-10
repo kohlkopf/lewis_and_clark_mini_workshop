@@ -1,0 +1,32 @@
+---
+title: "Single Cell RNA-Seq Analysis Demo | Seurat"
+subtitle: "Lewis & Clark College"
+author: "Kohl Kinning"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output:
+  html_notebook:
+    theme: cosmo
+    toc: yes
+    toc_float:
+      collapsed: yes
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r}
+download.file("https://s3-us-west-2.amazonaws.com/10x.files/samples/cell/pbmc3k/pbmc3k_filtered_gene_bc_matrices.tar.gz", destfile = "pbmc3k_filtered_gene_bc_matrices.tar.gz")
+```
+
+```{bash}
+tar xzf pbmc3k_filtered_gene_bc_matrices.tar.gz 
+```
+
+```{r}
+install.packages(c("Seurat", "dplyr"))
+
+library(Seurat)
+library(dplyr)
+
+# Load the PBMC dataset
+pbmc.data <- Read10X("/cloud/project/filtered_gene_bc_matrices/hg19/")
+```
