@@ -19,6 +19,8 @@ For this tutorial, we will be analyzing the a dataset of Peripheral Blood Mononu
 
 We start by reading in the data. All features in Seurat have been configured to work with sparse matrices which results in significant memory and speed savings for Drop-seq/inDrop/10x data.
 
+
+
 ```{r}
 download.file("https://s3-us-west-2.amazonaws.com/10x.files/samples/cell/pbmc3k/pbmc3k_filtered_gene_bc_matrices.tar.gz", destfile = "../data/pbmc3k_filtered_gene_bc_matrices.tar.gz")
 ```
@@ -29,18 +31,26 @@ tar xzf ../data/pbmc3k_filtered_gene_bc_matrices.tar.gz -C ../data
 
 ```{r}
 #install.packages(c("Seurat", "dplyr"))
+#install.packages("devtools")
+#devtools::install_github("krlmlr/ulimit")
 
 library(Seurat)
 library(dplyr)
+library(ulimit)
 
+ulimit::memory_limit(2048)
+```
+
+```{r}
 # Load the PBMC dataset
-pbmc.data <- Read10X("../data/filtered_gene_bc_matrices/hg19/")
+# pbmc.data <- Read10X("../data/filtered_gene_bc_matrices/hg19/")
+load(file="../data/pbmc_base.RData")
 
 # Initialize the Seurat object with the raw (non-normalized data).  Keep all
 # genes expressed in >= 3 cells (~0.1% of the data). Keep all cells with at
 # least 200 detected genes
+# RStudio cloud truncates this object dramatically
 pbmc <- CreateSeuratObject(raw.data = pbmc.data, min.cells = 3, min.genes = 200, project = "10X_PBMC")
-rm(pbmc.data)
 ```
 
 # Standard pre-processing workflow
@@ -111,7 +121,9 @@ Your single cell dataset likely contains ‘uninteresting’ sources of variatio
 We can regress out cell-cell variation in gene expression driven by batch (if applicable), cell alignment rate (as provided by Drop-seq tools for Drop-seq data), the number of detected molecules, and mitochondrial gene expression. For cycling cells, we can also learn a ‘cell-cycle’ score (see example here) and regress this out as well. In this simple example here for post-mitotic blood cells, we regress on the number of detected molecules per cell as well as the percentage mitochondrial gene content.
 
 ```{r}
-pbmc <- ScaleData(object = pbmc, vars.to.regress = c("nUMI", "percent.mito"), do.par = TRUE, num.cores = 4)
+#rm(pbmc)
+load(file="pbmc_scaled.RData")
+#pbmc <- ScaleData(object = pbmc, vars.to.regress = c("nUMI", "percent.mito"), do.par = TRUE)
 ```
 
 
