@@ -38,11 +38,14 @@ Expand the **Console** pane. There should be four tabs, *Console*, *Terminal*, *
 ## Navigating your file system
 The part of the operating system responsible for managing files and directories is called the file system. It organizes our data into files, which hold information, and directories (also called “folders”), which hold files or other directories.
 
+First set the working directory to the correct directory at `/cloud/project/lewis_and_clark_mini_workshop/unix_tutorial`.
+
 Several commands are frequently used to create, inspect, rename, and delete files and directories.
 
-Let’s find out where we are by running a command called `pwd` (which stands for “print working directory”). At any moment, our current working directory is our current default directory, i.e., the directory that the computer assumes we want to run commands in unless we explicitly specify something else. Here, the computer’s response is cloud/project/lewis_and_clark_mini_workshop/unix_tutorial, which is the top level directory within our cloud system:
+Let’s doule-check our location by running a command called `pwd` (which stands for “print working directory”). At any moment, our current working directory is our current default directory, i.e., the directory that the computer assumes we want to run commands in unless we explicitly specify something else.
 
 ```bash
+$ cd /cloud/project/lewis_and_clark_mini_workshop/unix_tutorial
 $ pwd
 ```
 ```

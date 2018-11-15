@@ -31,20 +31,12 @@ tar xzf ../data/pbmc3k_filtered_gene_bc_matrices.tar.gz -C ../data
 
 ```{r}
 #install.packages(c("Seurat", "dplyr"))
-#install.packages("devtools")
-#devtools::install_github("krlmlr/ulimit")
 
 library(Seurat)
 library(dplyr)
-library(ulimit)
 
-ulimit::memory_limit(2048)
-```
-
-```{r}
 # Load the PBMC dataset
-# pbmc.data <- Read10X("../data/filtered_gene_bc_matrices/hg19/")
-load(file="../data/pbmc_base.RData")
+pbmc.data <- Read10X("../data/filtered_gene_bc_matrices/hg19/")
 
 # Initialize the Seurat object with the raw (non-normalized data).  Keep all
 # genes expressed in >= 3 cells (~0.1% of the data). Keep all cells with at
@@ -121,9 +113,7 @@ Your single cell dataset likely contains ‘uninteresting’ sources of variatio
 We can regress out cell-cell variation in gene expression driven by batch (if applicable), cell alignment rate (as provided by Drop-seq tools for Drop-seq data), the number of detected molecules, and mitochondrial gene expression. For cycling cells, we can also learn a ‘cell-cycle’ score (see example here) and regress this out as well. In this simple example here for post-mitotic blood cells, we regress on the number of detected molecules per cell as well as the percentage mitochondrial gene content.
 
 ```{r}
-#rm(pbmc)
-load(file="pbmc_scaled.RData")
-#pbmc <- ScaleData(object = pbmc, vars.to.regress = c("nUMI", "percent.mito"), do.par = TRUE)
+pbmc <- ScaleData(object = pbmc, vars.to.regress = c("nUMI", "percent.mito"), do.par = TRUE)
 ```
 
 
@@ -184,8 +174,7 @@ The FindClusters function implements the procedure, and contains a resolution pa
 # save.SNN = T saves the SNN so that the clustering algorithm can be rerun
 # using the same graph but with a different resolution value (see docs for
 # full details)
-pbmc <- FindClusters(object = pbmc, reduction.type = "pca", dims.use = 1:10, 
-    resolution = 0.6, print.output = 0, save.SNN = TRUE)
+pbmc <- FindClusters(object = pbmc, reduction.type = "pca", dims.use = 1:10, resolution = 0.6, print.output = 0, save.SNN = TRUE)
 ```
 
 # Run Non-linear dimensional reduction (tSNE)
@@ -212,16 +201,14 @@ print(x = head(x = cluster1.markers, n = 5))
 
 ```{r}
 # find all markers distinguishing cluster 5 from clusters 0 and 3
-cluster5.markers <- FindMarkers(object = pbmc, ident.1 = 5, ident.2 = c(0, 3), 
-    min.pct = 0.25)
+cluster5.markers <- FindMarkers(object = pbmc, ident.1 = 5, ident.2 = c(0, 3), min.pct = 0.25)
 print(x = head(x = cluster5.markers, n = 5))
 ```
 
 ```{r}
 # find markers for every cluster compared to all remaining cells, report
 # only the positive ones
-pbmc.markers <- FindAllMarkers(object = pbmc, only.pos = TRUE, min.pct = 0.25, 
-    thresh.use = 0.25)
+pbmc.markers <- FindAllMarkers(object = pbmc, only.pos = TRUE, min.pct = 0.25, thresh.use = 0.25)
 pbmc.markers %>% group_by(cluster) %>% top_n(2, avg_logFC)
 ```
 
@@ -232,9 +219,7 @@ VlnPlot(object = pbmc, features.plot = c("MS4A1", "CD79A"))
 ```
 
 ```{r}
-FeaturePlot(object = pbmc, features.plot = c("MS4A1", "GNLY", "CD3E", "CD14", 
-    "FCER1A", "FCGR3A", "LYZ", "PPBP", "CD8A"), cols.use = c("grey", "blue"), 
-    reduction.use = "tsne")
+FeaturePlot(object = pbmc, features.plot = c("MS4A1", "GNLY", "CD3E", "CD14", "FCER1A", "FCGR3A", "LYZ", "PPBP", "CD8A"), cols.use = c("grey", "blue"), reduction.use = "tsne")
 ```
 
 `DoHeatmap` generates an expression heatmap for given cells and genes. In this case, we are plotting the top 10 markers (or all markers if less than 10) for each cluster
@@ -253,8 +238,7 @@ Fortunately in the case of this dataset, we can use canonical markers from the l
 
 ```{r}
 current.cluster.ids <- c(0, 1, 2, 3, 4, 5, 6, 7)
-new.cluster.ids <- c("CD4 T cells", "CD14+ Monocytes", "B cells", "CD8 T cells", 
-    "FCGR3A+ Monocytes", "NK cells", "Dendritic cells", "Megakaryocytes")
+new.cluster.ids <- c("CD4 T cells", "CD14+ Monocytes", "B cells", "CD8 T cells", "FCGR3A+ Monocytes", "NK cells", "Dendritic cells", "Megakaryocytes")
 pbmc@ident <- plyr::mapvalues(x = pbmc@ident, from = current.cluster.ids, to = new.cluster.ids)
 TSNEPlot(object = pbmc, do.label = TRUE, pt.size = 0.5)
 ```

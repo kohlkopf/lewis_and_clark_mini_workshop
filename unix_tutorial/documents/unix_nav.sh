@@ -1,3 +1,4 @@
+cd /cloud/project/lewis_and_clark_mini_workshop/unix_tutorial
 pwd
 ls
 cd data
