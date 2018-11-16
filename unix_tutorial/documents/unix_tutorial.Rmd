@@ -49,11 +49,11 @@ $ cd /cloud/project/lewis_and_clark_mini_workshop/unix_tutorial
 $ pwd
 ```
 ```
-/projects/cloud
+/cloud/project/lewis_and_clark_mini_workshop/unix_tutorial
 ```
 Let’s look at how our file system is organized.
 
-At the top is our dcuser directory, which holds all the subdirectories and files.
+At the top is our projects directory, which holds all the subdirectories and files.
 
 Inside that directory are some other directories:
 
@@ -61,7 +61,7 @@ Inside that directory are some other directories:
 $ ls
 ```
 ```
-project.RProj    software    documents    untrimmed_fastq
+data  documents  software
 ```
 We’ll be working with these subdirectories throughout this workshop.
 
@@ -114,12 +114,12 @@ Typing out file or directory names can waste a lot of time and it’s easy to ma
 Return to your home directory:
 
 ```bash
-$ cd cloud/project/lewis_and_clark_mini_workshop/unix_tutorial
+$ cd /cloud/project/lewis_and_clark_mini_workshop/unix_tutorial
 ```
 then enter:
 
 ```bash
-$ cd sam<tab>
+$ cd da<tab>
 ```
 The shell will fill in the rest of the directory name for data.
 
@@ -131,11 +131,9 @@ $ cd untrimmed_fastq
 ```
 Using tab complete can be very helpful. However, it will only autocomplete a file or directory name if you’ve typed enough characters to provide a unique identifier for the file or directory you are trying to access.
 
-If we navigate back to our untrimmed_fastq directory and try to access one of our sample files:
+If we try to access one of our sample files:
+
 ```bash
-$ cd
-$ cd data
-$ cd untrimmed_fastq
 $ ls SR<tab>
 ```
 The shell auto-completes your command to SRR09, because all file names in the directory begin with this prefix. When you hit Tab again, the shell will list the possible choices.
@@ -170,7 +168,7 @@ We now know how to move around our file system using the command line. This give
 
 When working with high-throughput sequencing data, the raw reads you get off of the sequencer will need to pass through a number of  different tools in order to generate your final desired output. The execution of this set of tools in a specified order is commonly referred to as a *workflow* or a *pipeline*. 
 
-An example of the workflow we will be using for our variant calling analysis is provided below with a brief description of each step. 
+An example of the workflow we could use for a variant calling analysis is provided below with a brief description of each step. 
 
 ![](./media/variant_calling_workflow.png)
 
@@ -189,6 +187,8 @@ These workflows in bioinformatics adopt a plug-and-play approach in that the out
 The first step in the variant calling workflow is to take the FASTQ files received from the sequencing facility and assess the quality of the sequence reads. 
 
 ![](./media/var_calling_workflow_qc.png)
+
+
 ## Details on the FASTQ format
 
 Although it looks complicated (and it is), it's easy to understand the [fastq](https://en.wikipedia.org/wiki/FASTQ_format) format with a little decoding. Some rules about the format include...
@@ -249,7 +249,7 @@ we can now see that the quality of each of the `N`s is 0 and the quality of the 
 
 ### Assessing Quality using FastQC
 
-In real life, you won't be assessing the quality of your reads by visually inspecting yourFASTQ files. Rather, you'll be using a software program to assess read quality and  filter out poor quality reads. We'll first use a program called [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) to visualize the quality of our reads.  Later in our workflow, we'll use another program to filter out poor quality reads. 
+In real life, you won't be assessing the quality of your reads by visually inspecting yourFASTQ files. Rather, you'll be using a software program to assess read quality and  filter out poor quality reads. We'll first use a program called [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) to visualize the quality of our reads.
 
 FastQC has a number of features which can give you a  quick impression of any problems your issues into consideration before moving forward with your analyses. Rather than looking at quality scores for each individual read, FastQC looks at quality collectively across all reads within a sample. The image below shows a FastQC-generated plot that indicates a very high quality sample:
 
@@ -267,19 +267,16 @@ Here, we see positions within the read in which the boxes span a much wider rang
 
 ### Running FastQC  
 
-We will be working with a set of sample data that is located in a hidden directory (`.dc_sampledata_lite`). First, we will move some of these hidden files to the `data` directory your created at [the end of our last lesson](http://www.datacarpentry.org/shell-genomics/06-organization/).  
-
-
 Navigate to your FASTQ dataset: 
 
 ```bash
-$ cd cloud/project/lewis_and_clark_mini_workshop/unix_tutorial/data/untrimmed_fastq/
+$ cd /cloud/project/lewis_and_clark_mini_workshop/unix_tutorial/data/untrimmed_fastq/
 ```
 
 To run the FastQC program, we need to tell our computer where the program is located  (in `~/FastQC`).  FastQC can accept multiple file names as input, so we can use the *.fastq wildcard to run FastQC on all of the FASTQ files in this directory.
 
 ```bash
-$ cloud/project/lewis_and_clark_mini_workshop/unix_tutorial/software/FastQC/fastqc *.fastq
+$ /cloud/project/lewis_and_clark_mini_workshop/unix_tutorial/software/FastQC/fastqc *.fastq
 ```
 
 
@@ -304,26 +301,27 @@ For each input FASTQ file, FastQC has created a `.zip` file and a `.html` file. 
 We want to keep our data files and our results files separate, so we will move these output files into a new directory within a new `results/` directory.
 
 ```bash
-mkdir cloud/project/lewis_and_clark_mini_workshop/unix_tutorial/results
-$ mkdir cloud/project/lewis_and_clark_mini_workshop/unix_tutorial/results/fastqc_untrimmed_reads
-$ mv *.zip cloud/project/lewis_and_clark_mini_workshop/unix_tutorial/results/fastqc_untrimmed_reads/
-$ mv *.html cloud/project/lewis_and_clark_mini_workshop/unix_tutorial/results/fastqc_untrimmed_reads/
+$ mkdir /cloud/project/lewis_and_clark_mini_workshop/unix_tutorial/results
+$ mkdir /cloud/project/lewis_and_clark_mini_workshop/unix_tutorial/results/fastqc_untrimmed_reads
+$ mv *.zip /cloud/project/lewis_and_clark_mini_workshop/unix_tutorial/results/fastqc_untrimmed_reads/
+$ mv *.html /cloud/project/lewis_and_clark_mini_workshop/unix_tutorial/results/fastqc_untrimmed_reads/
 ```
 
 Now we can navigate into this results directory and do some closer inspection of our output files.
 
 ```bash
-$ cd cloud/project/lewis_and_clark_mini_workshop/unix_tutorial/results/fastqc_untrimmed_reads/
+$ cd /cloud/project/lewis_and_clark_mini_workshop/unix_tutorial/results/fastqc_untrimmed_reads/
+$ ls
 ```
 
 
 
 ### Unzipping Compressed Files
 
-Let's look more closely at the other output files. Just to make sure we are in the right deirectory, change to the results sub-directory.
+Let's look more closely at the other output files. To ensure we are in the right place, change to the results sub-directory.
 
 ```bash
-$ cd cloud/project/lewis_and_clark_mini_workshop/unix_tutorial/results/fastqc_untrimmed_reads/
+$ cd /cloud/project/lewis_and_clark_mini_workshop/unix_tutorial/results/fastqc_untrimmed_reads/
 $ ls
 ```
 
@@ -436,9 +434,11 @@ WARN    Kmer Content    SRR097977.fastq
 
 The summary file gives us a list of tests that FastQC ran, and tells us whether this sample passed, failed, or is borderline (`WARN`).
 
+Open the html file using the RStudio file browser.
+
 # Future steps
 
-At this point, we'd continue with the workflow.
+At this point, we'd probabbly re-run the experiment. The read quality is very low. If we had good reads, we'd continue with the workflow.
 
 ![](./media/variant_calling_workflow.png)
 
