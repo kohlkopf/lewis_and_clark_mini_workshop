@@ -204,10 +204,10 @@ FeaturePlot(object = pbmc, features.plot = c("MS4A1", "GNLY", "CD3E", "CD14", "F
 
 `DoHeatmap()` generates an expression heatmap for given cells and genes. In this case, we are plotting the top 10 markers (or all markers if less than 10) for each cluster
 
-```{r}
+```{r fig.height=20, fig.width=25}
 top10 <- pbmc.markers %>% group_by(cluster) %>% top_n(10, avg_logFC)
 # setting slim.col.label to TRUE will print just the cluster IDS instead of every cell name
-DoHeatmap(object = pbmc, genes.use = top10$gene, slim.col.label = TRUE, remove.key = TRUE)
+DoHeatmap(object = pbmc, genes.use = top10$gene, slim.col.label = TRUE, remove.key = TRUE, cex.row = 8, cex.col = 8, group.label.rot = TRUE)
 ```
 
 
